@@ -1,0 +1,10 @@
+
+confluent-kafka==2.5.0
+confluent-kafka[avro]==2.5.0
+fastavro==1.9.5
+google-cloud-storage==2.19.0
+pyspark==3.5.3
+SQLAlchemy==1.4.51
+
+kafka-python
+pandas
