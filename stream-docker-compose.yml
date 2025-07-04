@@ -1,8 +1,18 @@
 
+# x-spark-common: &spark-common
+#  image: bitnami/spark:3.5.0
+#  networks:
+#    - confluent
+
 x-spark-common: &spark-common
- image: bitnami/spark:3.5.0
- networks:
-   - confluent
+  build:
+    context: .
+    dockerfile: dockerimages/spark/Dockerfile  # 🔧 Đường dẫn Dockerfile Spark bạn đã build tay
+  networks:
+    - confluent
+  volumes:
+    - ./spark/checkpoints:/tmp/checkpoints
+    - ./dockerimages/spark/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
 
 services:
   zookeeper:
@@ -111,8 +121,32 @@ services:
       - confluent
 
 
+  # spark-master:
+  #   <<: *spark-common
+  #   command: bin/spark-class org.apache.spark.deploy.master.Master
+  #   ports:
+  #     - "9190:8080"
+  #     - "7077:7077"
+  #     - "4040:4040"
+  #     - "8181:8181"
+
+  # spark-worker: &spark-worker-image
+  #   <<: *spark-common
+  #   command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+  #   depends_on:
+  #     - spark-master
+  #   environment:
+  #     SPARK_MODE: worker
+  #     SPARK_WORKER_CORES: 2
+  #     SPARK_WORKER_MEMORY: 2g
+  #     SPARK_MASTER_URL: spark://spark-master:7077
+
+  # spark-worker-2:
+  #   <<: *spark-worker-image
+
   spark-master:
     <<: *spark-common
+    container_name: spark-master
     command: bin/spark-class org.apache.spark.deploy.master.Master
     ports:
       - "9190:8080"
@@ -120,22 +154,45 @@ services:
       - "4040:4040"
       - "8181:8181"
 
-  spark-worker: &spark-worker-image
+    volumes:
+      - ./spark_job:/opt/airflow/scripts
+    networks:
+      - confluent
+
+  spark-worker:
     <<: *spark-common
+    container_name: spark-worker-1
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     depends_on:
       - spark-master
     environment:
       SPARK_MODE: worker
-      SPARK_WORKER_CORES: 2
-      SPARK_WORKER_MEMORY: 2g
-      SPARK_MASTER_URL: spark://spark-master:7077
+      SPARK_WORKER_CORES: 1
+      SPARK_WORKER_MEMORY: 1g
+    networks:
+      - confluent
+     
 
-  spark-worker-2:
-    <<: *spark-worker-image
+  minio:
+    image: minio/minio
+    container_name: minio
+    hostname: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    env_file:
+      - .env
+    command: server --console-address ":9001" /data
+    networks:
+      - confluent
 
 volumes:
  cdc_postgres_data:
+ spark-checkpoints:
+ minio_storage:
 
 networks:
   confluent:
+    driver: bridge

@@ -8,3 +8,7 @@ SQLAlchemy==1.4.51
 
 kafka-python
 pandas
+
+delta-spark>=2.1.0
+
+delta
