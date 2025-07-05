@@ -12,3 +12,4 @@ pandas
 delta-spark>=2.1.0
 
 delta
+minio 
