@@ -61,7 +61,7 @@ class SalesStreamer:
 #run 
 if __name__ == "__main__":
     streamer = SalesStreamer()
-    streamer.start_streaming(batch_size=1000, interval=5)
+    streamer.start_streaming(batch_size=5000, interval=1)
 
 
 
