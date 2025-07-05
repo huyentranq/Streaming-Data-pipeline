@@ -1,8 +1,5 @@
 
-# x-spark-common: &spark-common
-#  image: bitnami/spark:3.5.0
-#  networks:
-#    - confluent
+
 
 x-spark-common: &spark-common
   build:
@@ -121,28 +118,6 @@ services:
       - confluent
 
 
-  # spark-master:
-  #   <<: *spark-common
-  #   command: bin/spark-class org.apache.spark.deploy.master.Master
-  #   ports:
-  #     - "9190:8080"
-  #     - "7077:7077"
-  #     - "4040:4040"
-  #     - "8181:8181"
-
-  # spark-worker: &spark-worker-image
-  #   <<: *spark-common
-  #   command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
-  #   depends_on:
-  #     - spark-master
-  #   environment:
-  #     SPARK_MODE: worker
-  #     SPARK_WORKER_CORES: 2
-  #     SPARK_WORKER_MEMORY: 2g
-  #     SPARK_MASTER_URL: spark://spark-master:7077
-
-  # spark-worker-2:
-  #   <<: *spark-worker-image
 
   spark-master:
     <<: *spark-common
@@ -155,7 +130,11 @@ services:
       - "8181:8181"
 
     volumes:
-      - ./spark_job:/opt/airflow/scripts
+      - ./spark_job:/opt/airflow/scripts/spark_job
+    environment:
+      PYTHONPATH:  /opt/airflow/scripts
+    env_file:
+      - .env
     networks:
       - confluent
 
