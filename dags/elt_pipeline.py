@@ -16,24 +16,77 @@ with DAG(
     schedule_interval="@once",  # Có thể đổi thành "*/5 * * * *" nếu muốn chạy định kỳ
     start_date=datetime(2025, 7, 1),
     catchup=False,
-    tags=["streaming", "spark", "etl"]
+    tags=["streaming", "spark", "elt"]
 ) as dag:
 
 
+    # bronze_layer
     kafka_to_bronze = BashOperator(
         task_id="kafka_to_bronze",
         bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/kafka_to_bronze.py",
     )
-    # bronze_to_silver = BashOperator(
-    #     task_id="bronze_to_silver",
-    #     bash_command="spark-submit /opt/airflow/scripts/bronze_to_silver.py",
-    #     dag=dag,
-    # )
 
-    # silver_to_gold = BashOperator(
-    #     task_id="silver_to_gold",
-    #     bash_command="spark-submit /opt/airflow/scripts/silver_to_gold.py",
-    #     dag=dag,
-    # )
 
-    kafka_to_bronze ## >> bronze_to_silver >> silver_to_gold
+    ## silver layer
+    silver_cleaned = BashOperator(
+        task_id="silver_pizza_cleaned",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/silver_layer.py silver_pizza_cleaned"
+    )
+
+    silver_order_items = BashOperator(
+        task_id="silver_order_items",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/silver_layer.py silver_order_items"
+    )
+
+    silver_pizza_catalog = BashOperator(
+        task_id="silver_pizza_catalog",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/silver_layer.py silver_pizza_catalog"
+    )
+
+    silver_timestamp = BashOperator(
+        task_id="silver_timestamp",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/silver_layer.py silver_timestamp"
+    )
+
+
+    # gold_layer 
+
+    gold_dim_date = BashOperator(
+        task_id="gold_dim_date",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/gold_layer.py gold_dim_date"
+    )
+
+    gold_dim_time = BashOperator(
+        task_id="gold_dim_time",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/gold_layer.py gold_dim_time"
+    )
+
+    gold_dim_pizza = BashOperator(
+        task_id="gold_dim_pizza",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/gold_layer.py gold_dim_pizza"
+    )
+
+    gold_fact_order_item = BashOperator(
+        task_id="gold_fact_order_item",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/gold_layer.py gold_fact_order_item"
+    )
+
+    gold_fact_daily_sales = BashOperator(
+        task_id="gold_fact_daily_sales",
+        bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/gold_layer.py gold_fact_daily_sales"
+    )
+
+
+# 1. Bronze -> Silver
+kafka_to_bronze >> silver_cleaned
+silver_cleaned  >> [silver_order_items, silver_pizza_catalog, silver_timestamp]
+
+# 2. Gold dimensions
+silver_timestamp     >> [gold_dim_date, gold_dim_time]
+silver_pizza_catalog >>  gold_dim_pizza        # chỉ dim_pizza cần
+
+# 3. Fact detail
+[gold_dim_date, gold_dim_time, gold_dim_pizza, silver_order_items] >> gold_fact_order_item
+
+# 4. Fact aggregate / daily KPI
+gold_fact_order_item >> gold_fact_daily_sales
