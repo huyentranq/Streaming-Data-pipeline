@@ -114,23 +114,29 @@ def silver_timestamp(silver_pizza_cleaned: DataFrame) -> DataFrame:
 
 
 
-# ---------- 5. Chạy theo đối số ----------
-target = sys.argv[1]            # ex: silver_order_items
 bronze_df = read_delta_stream(spark, "lakehouse", "bronze", "pizza_sales")
 
 cleaned_df = silver_pizza_cleaned(bronze_df)
+write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
+write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
+write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
+write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
 
-if target == "silver_pizza_cleaned":
-    write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
 
-elif target == "silver_order_items":
-    write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
+# ---------- 5. Chạy theo đối số ----------
+# target = sys.argv[1]            # ex: silver_order_items
 
-elif target == "silver_pizza_catalog":
-    write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
+# if target == "silver_pizza_cleaned":
+#     write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
 
-elif target == "silver_timestamp":
-    write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
+# elif target == "silver_order_items":
+#     write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
 
-else:
-    raise ValueError(f"Unknown table: {target}")
+# elif target == "silver_pizza_catalog":
+#     write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
+
+# elif target == "silver_timestamp":
+#     write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
+
+# else:
+#     raise ValueError(f"Unknown table: {target}")
