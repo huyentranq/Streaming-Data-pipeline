@@ -30,6 +30,7 @@ def read_delta_stream(spark, bucket, layer, table_name):
     return spark.readStream.format("delta").load(path)
 
 
+
 def write_stream_to_lake(df: DataFrame, bucket: str, layer: str, table_name, fmt: str = "delta") -> None:
 
     try:
@@ -37,15 +38,15 @@ def write_stream_to_lake(df: DataFrame, bucket: str, layer: str, table_name, fmt
         path = f"s3a://{bucket}/{layer}/{table_name}"
         checkpoint_path = f"s3a://{bucket}/checkpoints/{layer}/{table_name}"    
         logging.info(f"📦 Starting stream write to {path} (format: {fmt}, checkpoint: {checkpoint_path})")
-        logging.info(f"📑 DataFrame schema:\n{df.printSchema()}")
-        logging.info(f"🔍 Streaming DataFrame plan:\n{df._jdf.queryExecution().logical().toString()}")
+        # logging.info(f"📑 DataFrame schema:\n{df.printSchema()}")
+        # logging.info(f"🔍 Streaming DataFrame plan:\n{df._jdf.queryExecution().logical().toString()}")
 
         query = df.writeStream \
             .format(fmt) \
             .outputMode("append") \
             .option("checkpointLocation", checkpoint_path) \
             .option("path", path) \
-            .trigger(processingTime="1 minute") \
+            .trigger(once=True) \
             .start()
 
         logging.info(f"🚀 Stream started: {query.name} (isActive={query.isActive})")
