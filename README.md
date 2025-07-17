@@ -4,38 +4,26 @@
 
 - [🏗️ Project Overview](#️-project-overview)
   - [Key Features](#key-features)
-- [🏛️ Architecture](#️-architecture)
-- [📊 Data Flow & Lineage](#-data-flow--lineage)
-  - [Data Pipeline Stages](#data-pipeline-stages)
-  - [Data Lineage](#data-lineage)
-- [📁 Folder Structure](#-folder-structure)
-- [🚀 Installation & Deployment](#-installation--deployment)
-  - [Prerequisites](#prerequisites)
-  - [Quick Start](#quick-start)
-  - [Makefile Commands](#makefile-commands)
+- [ Architecture](#️-architecture)
+- [ Data Flow & Lineage](#-data-flow--lineage)
+
+- [ Folder Structure](#-folder-structure)
+- [ Installation & Deployment](#-installation--deployment)
+
 - [🔌 Port Mappings & Service Access](#-port-mappings--service-access)
-  - [Default Credentials](#default-credentials)
-  - [Check Container Status](#check-container-status)
+
 - [📡 Kafka Streaming Simulation](#-kafka-streaming-simulation)
   - [Start Data Generation](#start-data-generation)
   - [Kafka Topics](#kafka-topics)
   - [Monitor Kafka Streams](#monitor-kafka-streams)
 - [⚡ Airflow Usage](#-airflow-usage)
-  - [Access Airflow WebUI](#access-airflow-webui)
-  - [Available DAGs](#available-dags)
-  - [Trigger DAGs Manually](#trigger-dags-manually)
-  - [Monitor DAG Execution](#monitor-dag-execution)
+
 - [📊 Power BI Connection](#-power-bi-connection)
-  - [PostgreSQL Connection Setup](#postgresql-connection-setup)
-  - [Available Tables for Analysis](#available-tables-for-analysis)
-  - [Sample Power BI Dashboard](#sample-power-bi-dashboard)
-  - [Key Metrics Available](#key-metrics-available)
+
 - [🚧 Limitations & Future Improvements](#-limitations--future-improvements)
   - [Current Limitations](#current-limitations)
   - [Proposed Improvements](#proposed-improvements)
-- [🤝 Contributing](#-contributing)
-- [📧 Author](#-author)
-- [📄 License](#-license)
+
 - [🙏 Acknowledgments](#-acknowledgments)
 
 ---
