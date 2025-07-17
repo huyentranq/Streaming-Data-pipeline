@@ -1,4 +1,5 @@
 # Pizza Sales Streaming Pipeline
+A real-time data engineering pipeline that simulates pizza sales data streaming using modern big data technologies. This project demonstrates a complete end-to-end streaming solution implementing the medallion architecture (Bronze-Silver-Gold layers) for data processing and analytics.
 
 ## 📋 Table of Contents
 
@@ -28,7 +29,6 @@
 
 ---
 
-A real-time data engineering pipeline that simulates pizza sales data streaming using modern big data technologies. This project demonstrates a complete end-to-end streaming solution implementing the medallion architecture (Bronze-Silver-Gold layers) for data processing and analytics.
 
 ## 🏗️ Project Overview
 
@@ -47,7 +47,7 @@ The Pizza Sales Streaming Pipeline is designed to showcase real-time data proces
 
 ## 🏛️ Architecture
 
-<img src="docs/images/architecture-diagram.png" alt="Pipeline Architecture Diagram" width="800"/>
+<img src="images/data_pipeline.png" alt="Pipeline Architecture Diagram" width="800"/>
 
 The pipeline follows a modern data architecture pattern with the following components:
 
@@ -59,9 +59,9 @@ The pipeline follows a modern data architecture pattern with the following compo
 
 ## 📊 Data Flow & Lineage
 
-<img src="docs/images/data-flow-diagram.png" alt="Data Flow Diagram" width="800"/>
+<img src="docs/images/data-flow-diagram.png" alt="Data Lineage" width="800"/>
 
-### Data Pipeline Stages
+### Data Lineage
 
 1. **Data Generation**: Python scripts simulate pizza sales transactions with realistic patterns
 2. **Bronze Layer (Raw Data)**: 
@@ -71,24 +71,13 @@ The pipeline follows a modern data architecture pattern with the following compo
 3. **Silver Layer (Cleaned Data)**:
    - Spark Streaming validates and cleanses data
    - Data deduplication and schema enforcement
-   - Enrichment with calculated fields (total_amount, profit_margin)
+   - Enrichment with calculated fields 
 4. **Gold Layer (Aggregated Data)**:
    - Business-ready aggregations and KPIs
    - Hourly, daily, and monthly sales summaries
    - Customer segmentation and product performance metrics
    - Data stored in PostgreSQL for BI consumption
 
-### Data Lineage
-
-```
-Raw Sales Data → Kafka Topics → Spark Streaming → MinIO (Bronze)
-                                      ↓
-PostgreSQL (Silver) ← Data Validation & Cleansing
-                                      ↓
-PostgreSQL (Gold) ← Aggregations & Business Logic
-                                      ↓
-Power BI Dashboards ← Analytics & Visualization
-```
 
 ## 📁 Folder Structure
 
@@ -142,12 +131,9 @@ pizza-sales-streaming-pipeline/
 
 ### Prerequisites
 
-- Docker Engine 20.10+
-- Docker Compose 2.0+
-- Make utility
+- Docker Desktop
 - 8GB+ RAM recommended
-- 20GB+ free disk space
-
+- python 3.8
 ### Quick Start
 
 1. **Clone the repository**
@@ -158,24 +144,41 @@ pizza-sales-streaming-pipeline/
 
 2. **Set up environment variables**
    ```bash
-   cp .env.example .env
    # Edit .env file with your configuration
    ```
 
-3. **Deploy the entire pipeline**
+3. **Initialize all container**
    ```bash
-   make deploy
+   make build_stream
+   make up_stream
+   make up
+
+   ```
+  **Port Mappings & Service Access**
+
+| Service | Port | URL | Description |
+|---------|------|-----|-------------|
+| Apache Airflow | 8080 | http://localhost:8080 | Workflow orchestration UI |
+| Kafka UI | 8081 | http://localhost:8081 | Kafka cluster management |
+| MinIO Console | 9001 | http://localhost:9001 | Data lake management |
+| PostgreSQL | 5432 | localhost:5432 | Data warehouse |
+| Spark Master UI | 4040 | http://localhost:4040 | Spark cluster monitoring |
+| Grafana | 3000 | http://localhost:3000 | Pipeline monitoring |
+| Jupyter Lab | 8888 | http://localhost:8888 | Data exploration |
+
+4. **Start kafka streaming**
+   ```bash
+   make kafka_stream
    ```
 
-4. **Initialize the data warehouse**
+5. **Initialize the data warehouse**
    ```bash
-   make init-database
+   make psql_create
    ```
+   - connect psql to dbeaver(desktop)  and use dbeaver to manage database
+6. **Open Airflow to manage dags**
+   http://localhost:8080
 
-5. **Start data streaming**
-   ```bash
-   make start-streaming
-   ```
 
 ### Makefile Commands
 
@@ -214,83 +217,29 @@ make backup
 make monitor
 ```
 
-## 🔌 Port Mappings & Service Access
-
-| Service | Port | URL | Description |
-|---------|------|-----|-------------|
-| Apache Airflow | 8080 | http://localhost:8080 | Workflow orchestration UI |
-| Kafka UI | 8081 | http://localhost:8081 | Kafka cluster management |
-| MinIO Console | 9001 | http://localhost:9001 | Data lake management |
-| PostgreSQL | 5432 | localhost:5432 | Data warehouse |
-| Spark Master UI | 4040 | http://localhost:4040 | Spark cluster monitoring |
-| Grafana | 3000 | http://localhost:3000 | Pipeline monitoring |
-| Jupyter Lab | 8888 | http://localhost:8888 | Data exploration |
 
 ### Default Credentials
 
-- **Airflow**: admin / admin
+- **Airflow**: airflow / airflow123
 - **MinIO**: minio / minio123
-- **PostgreSQL**: postgres / postgres
-- **Grafana**: admin / admin
+- **PostgreSQL**: airflow / airflow
 
-### Check Container Status
 
-```bash
-# Check all container status
-make status
 
-# View detailed container information
-docker-compose ps
 
-# Check container logs
-docker-compose logs [service-name]
-
-# Monitor resource usage
-docker stats
-```
-
-## 📡 Kafka Streaming Simulation
-
-### Start Data Generation
-
-```bash
-# Start pizza sales data simulation
-make start-streaming
-
-# Start with custom parameters
-docker-compose exec kafka python /app/producers/pizza_sales_producer.py \
-    --rate 100 \
-    --duration 3600 \
-    --restaurants 5
-```
-
-### Kafka Topics
-
-- `pizza-sales-raw`: Raw sales transactions
-- `pizza-sales-validated`: Validated and cleaned data
-- `pizza-sales-aggregated`: Hourly aggregations
 
 ### Monitor Kafka Streams
 
 <img src="docs/images/kafka-ui-screenshot.png" alt="Kafka UI Screenshot" width="800"/>
 
 ```bash
-# View topic messages in real-time
-docker-compose exec kafka kafka-console-consumer.sh \
-    --bootstrap-server localhost:9092 \
-    --topic pizza-sales-raw \
-    --from-beginning
-
-# Check topic details
-make kafka-topics
-```
 
 ## ⚡ Airflow Usage
 
 ### Access Airflow WebUI
 
 1. Navigate to http://localhost:8080
-2. Login with admin/admin
+2. Login with .env config
 3. Enable DAGs from the main dashboard
 
 <img src="docs/images/airflow-dashboard.png" alt="Airflow Dashboard Screenshot" width="800"/>
@@ -302,24 +251,14 @@ make kafka-topics
 - **data_quality_dag**: Runs data quality checks and alerts
 - **backup_dag**: Scheduled backups of processed data
 
-### Trigger DAGs Manually
-
-```bash
-# Trigger specific DAG
-docker-compose exec airflow-webserver airflow dags trigger bronze_to_silver_dag
-
-# Trigger with configuration
-docker-compose exec airflow-webserver airflow dags trigger silver_to_gold_dag \
-    --conf '{"start_date": "2024-01-01", "end_date": "2024-01-31"}'
-```
 
 ### Monitor DAG Execution
 
 <img src="docs/images/airflow-dag-runs.png" alt="Airflow DAG Runs Screenshot" width="600"/>
 
-## 📊 Power BI Connection
+## 📊 Power BI (desktop)
 
-### PostgreSQL Connection Setup
+### connect Power BI to postgres
 
 1. **Get connection details**
    ```bash
@@ -410,16 +349,7 @@ docker-compose exec airflow-webserver airflow dags trigger silver_to_gold_dag \
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📧 Author
 
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
