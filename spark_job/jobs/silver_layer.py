@@ -1,13 +1,14 @@
 from spark_job.resources.spark_manager import *
 from spark_job.resources.minio_manager import *
-from pyspark.sql.functions import from_json, col, current_timestamp
+# from pyspark.sql.functions import from_json, col, current_timestamp
 import logging
 import os
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.functions import collect_list, col, udf
-from pyspark.sql.types import StringType
-from datetime import datetime, timedelta
+# from pyspark.sql.functions import collect_list, col, udf
+# from pyspark.sql.types import StringType
+# from datetime import datetime, timedelta
+import sys
 BRONZE_PATH = "s3a://lakehouse/bronze/pizza_sales"
 
 LAYER = "silver"
@@ -117,26 +118,26 @@ def silver_timestamp(silver_pizza_cleaned: DataFrame) -> DataFrame:
 bronze_df = read_delta_stream(spark, "lakehouse", "bronze", "pizza_sales")
 
 cleaned_df = silver_pizza_cleaned(bronze_df)
-write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
-write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
-write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
-write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
+# write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
+# write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
+# write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
+# write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
 
 
 # ---------- 5. Chạy theo đối số ----------
-# target = sys.argv[1]            # ex: silver_order_items
+target = sys.argv[1]            # ex: silver_order_items
 
-# if target == "silver_pizza_cleaned":
-#     write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
+if target == "silver_pizza_cleaned":
+    write_stream_to_lake(cleaned_df, bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_cleaned")
 
-# elif target == "silver_order_items":
-#     write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
+elif target == "silver_order_items":
+    write_stream_to_lake(silver_order_items(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_order_items")
 
-# elif target == "silver_pizza_catalog":
-#     write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
+elif target == "silver_pizza_catalog":
+    write_stream_to_lake(silver_pizza_catalog(cleaned_df),bucket = BUCKET, layer = LAYER, table_name ="silver_pizza_catalog")
 
-# elif target == "silver_timestamp":
-#     write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
+elif target == "silver_timestamp":
+    write_stream_to_lake(silver_timestamp(cleaned_df), bucket = BUCKET, layer = LAYER, table_name ="silver_timestamp")
 
-# else:
-#     raise ValueError(f"Unknown table: {target}")
+else:
+    raise ValueError(f"Unknown table: {target}")

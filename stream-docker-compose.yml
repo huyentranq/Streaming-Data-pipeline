@@ -1,6 +1,4 @@
 
-
-
 x-spark-common: &spark-common
   build:
     context: .
@@ -137,6 +135,7 @@ services:
       - .env
     networks:
       - confluent
+      - airflow_spark_net  
 
   spark-worker:
     <<: *spark-common
@@ -150,6 +149,8 @@ services:
       SPARK_WORKER_MEMORY: 1g
     networks:
       - confluent
+      - airflow_spark_net  
+
      
 
   minio:
@@ -166,6 +167,8 @@ services:
     command: server --console-address ":9001" /data
     networks:
       - confluent
+      - airflow_spark_net  
+
 
 volumes:
  cdc_postgres_data:
@@ -175,3 +178,5 @@ volumes:
 networks:
   confluent:
     driver: bridge
+  airflow_spark_net:
+    external: true

@@ -9,3 +9,4 @@ spark/
 venv/
 dags/spark_job
 airflow/
+config/
