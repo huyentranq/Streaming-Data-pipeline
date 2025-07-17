@@ -29,6 +29,13 @@ def read_delta_stream(spark, bucket, layer, table_name):
     path = f"s3a://{bucket}/{layer}/{table_name}"
     return spark.readStream.format("delta").load(path)
 
+def read_delta_batch(spark, bucket, layer, table_name):
+    """
+    Đọc dữ liệu dạng batch từ Delta table trong S3 (dạng lakehouse).
+    
+    """
+    path = f"s3a://{bucket}/{layer}/{table_name}"
+    return spark.read.format("delta").load(path)
 
 
 def write_stream_to_lake(df: DataFrame, bucket: str, layer: str, table_name, fmt: str = "delta") -> None:
