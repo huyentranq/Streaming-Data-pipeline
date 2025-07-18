@@ -34,7 +34,13 @@ A real-time data engineering pipeline that simulates pizza sales data streaming 
 
 The Pizza Sales Streaming Pipeline is designed to showcase real-time data processing capabilities by simulating pizza restaurant sales data. The pipeline ingests streaming data through Apache Kafka, processes it using Apache Spark Streaming, stores raw and processed data in MinIO and PostgreSQL respectively, orchestrates workflows with Apache Airflow, and provides business insights through Power BI dashboards.
 
-### Key Features
+
+## 🏛️ Architecture
+
+<img src="images/data_pipeline.png" alt="Pipeline Architecture Diagram" width="800"/>
+
+The pipeline follows a modern data architecture pattern with the following components:
+
 
 - **Real-time Data Streaming**: Kafka producers simulate continuous pizza sales transactions
 - **Stream Processing**: Spark Streaming processes data in near real-time
@@ -45,39 +51,58 @@ The Pizza Sales Streaming Pipeline is designed to showcase real-time data proces
 - **Business Intelligence**: Power BI dashboards for data visualization and insights
 - **Containerized Deployment**: Docker-based setup for easy deployment and scalability
 
-## 🏛️ Architecture
-
-<img src="images/data_pipeline.png" alt="Pipeline Architecture Diagram" width="800"/>
-
-The pipeline follows a modern data architecture pattern with the following components:
-
-- **Data Ingestion Layer**: Kafka producers generate and stream pizza sales data
-- **Stream Processing Layer**: Spark Streaming processes incoming data streams
-- **Storage Layer**: MinIO (data lake) and PostgreSQL (data warehouse)
-- **Orchestration Layer**: Airflow manages pipeline workflows and dependencies
-- **Analytics Layer**: Power BI provides interactive dashboards and reports
 
 ## 📊 Data Flow & Lineage
 
-<img src="docs/images/data-flow-diagram.png" alt="Data Lineage" width="800"/>
 
-### Data Lineage
+<img src="images/data_lineage.png" alt="Data Lineage" width="800"/>
+
+
 
 1. **Data Generation**: Python scripts simulate pizza sales transactions with realistic patterns
 2. **Bronze Layer (Raw Data)**: 
+<img src="images/bronze.png" alt="bronze" width="800"/>
    - Kafka topics receive streaming sales data
    - Raw data stored in MinIO in Parquet format
-   - Data includes: order_id, timestamp, pizza_type, size, quantity, price, customer_info
-3. **Silver Layer (Cleaned Data)**:
-   - Spark Streaming validates and cleanses data
-   - Data deduplication and schema enforcement
-   - Enrichment with calculated fields 
-4. **Gold Layer (Aggregated Data)**:
-   - Business-ready aggregations and KPIs
-   - Hourly, daily, and monthly sales summaries
-   - Customer segmentation and product performance metrics
-   - Data stored in PostgreSQL for BI consumption
+   - Data includes: bronze_pizza_sales - raw data stream from dataset
 
+3. **Silver Layer (Cleaned Data)**:
+<img src="images/silver.png" alt="silver" width="800"/>
+   - Spark Streaming performs data validation and cleansing.
+   - Includes deduplication and strict schema enforcement.
+   - Data is enriched with additional calculated fields.
+   - The resulting tables include:
+
+         - silver_cleaned: cleaned data derived from bronze_pizza_sales.
+         - silver_order_items: extracts detailed information about each order.
+         - silver_pizza_catalog: extracts detailed information about each type of pizza.
+         - silver_timestamp: extracts and computes additional time-related attributes.
+   
+4. **Gold Layer (Aggregated Data)**:
+<img src="images/gold.png" alt="gold" width="800"/>
+
+The **Gold Layer** contains aggregated and transformed data structured into dimensional models. Data is organized into **dimension tables** and **fact tables** for analytics and reporting.
+
+ **Dimension Tables**
+
+- **`gold_dim_date`**:  
+  Derived from `silver_timestampt`.  
+  Includes: `date_id`, `order_date`, `day`, `month`, `year`, `quarter`, `week_of_year`, `weekday_num`, `weekday_name`.  
+  Supports time-based analysis across various intervals.
+
+- **`gold_dim_time`**:  
+  Also derived from `silver_timestampt`.  
+  Helps analyze customer behavior by specific time periods (e.g., hour of day).
+
+- **`gold_dim_pizza`**:  
+  Contains detailed information on each pizza, built from `silver_pizza_catalog`.  
+  Includes a synthetic key `pizza_sk` for joining with fact tables.
+
+### 📙 Fact Tables
+
+- **`gold_fact_order_item`**:  
+  The main fact table capturing item-level order details.  
+  Created by joining `silver_order_items` with dimension tables `gold_dim_date`, `gold_dim_time`, and `gold_dim_pizza` using foreign keys.
 
 ## 📁 Folder Structure
 
