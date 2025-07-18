@@ -1,6 +1,6 @@
 # Pizza Sales Streaming Pipeline
 
-**💼 For more detail please visit my personal portfolio site**
+**💼 For more detail please visit this project in my personal portfolio site**
    [huyentranq.github.io](https://huyentranq.github.io/)
 
 The Pizza Sales Streaming Pipeline is designed to showcase real-time data processing capabilities by simulating pizza restaurant sales data. The pipeline ingests streaming data through Apache Kafka, processes it using Apache Spark Streaming, stores raw and processed data in MinIO and PostgreSQL respectively, orchestrates workflows with Apache Airflow, and provides business insights through Power BI dashboards.
@@ -50,7 +50,7 @@ The pipeline follows a modern data architecture pattern with the following compo
    - Raw streaming data produced by upstream services  
    - Queued messages ready to be ingested into the Bronze layer
 2. **Bronze Layer (Raw Data)**: 
-<img src="images/bronze.png" alt="bronze" width="800"/>
+<img src="images/ bronze.png" alt="bronze" width="800"/>
    - Kafka topic `pizza_sales` receives raw streaming order data.
    - Data is parsed using a predefined schema and enriched with `ingest_time`.
    - Only one MinIO bucket (`lakehouse`) is used across all layers; no need to duplicate per layer.
@@ -118,7 +118,10 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    ```
 
 3. **Initialize all container**
+
    ```bash
+   #note: run one by one
+   make install 
    make build_stream
    make up_stream
    make up
@@ -231,4 +234,4 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
 
 ---
 
-**Note**: This project is for educational and demonstration purposes. For production use, additional security, monitoring, and scalability considerations should be implemented.
+**Happy coding!**
