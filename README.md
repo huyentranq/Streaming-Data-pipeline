@@ -43,7 +43,7 @@ The pipeline follows a modern data architecture pattern with the following compo
 ## 📊 Data Flow & Lineage
 
 
-<img src="images/data_lineage.png" alt="Data Lineage" width="600"/>
+<img src="images/data_lineage.png" alt="Data Lineage" width="800"/>
 
 
 
@@ -51,7 +51,7 @@ The pipeline follows a modern data architecture pattern with the following compo
    - Raw streaming data produced by upstream services  
    - Queued messages ready to be ingested into the Bronze layer
 2. **Bronze Layer (Raw Data)**: 
-<img src="images/ bronze.png" alt="bronze" width="800"/>
+<img src="images/ bronze.png" alt="bronze" width="700"/>
    - Kafka topic `pizza_sales` receives raw streaming order data.
    - Data is parsed using a predefined schema and enriched with `ingest_time`.
    - Only one MinIO bucket (`lakehouse`) is used across all layers; no need to duplicate per layer.
@@ -192,9 +192,8 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
 
    **Access the Dashboard**:
 
-      - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
-
-      - Use Power BI Desktop to open and interact with the report.
+   - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
+   - Use Power BI Desktop to open and interact with the report.
 
    **Build your own dashboard**
 ## 🚧 Limitations & Future Improvements
