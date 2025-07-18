@@ -45,8 +45,7 @@ def write_stream_to_lake(df: DataFrame, bucket: str, layer: str, table_name, fmt
         path = f"s3a://{bucket}/{layer}/{table_name}"
         checkpoint_path = f"s3a://{bucket}/checkpoints/{layer}/{table_name}"    
         logging.info(f"📦 Starting stream write to {path} (format: {fmt}, checkpoint: {checkpoint_path})")
-        # logging.info(f"📑 DataFrame schema:\n{df.printSchema()}")
-        # logging.info(f"🔍 Streaming DataFrame plan:\n{df._jdf.queryExecution().logical().toString()}")
+
 
         query = df.writeStream \
             .format(fmt) \

@@ -40,8 +40,8 @@ def create_spark_session(cfg, app_name="SparkKafkaPipeline"):
             # ------ Packages ------
             .config("spark.jars.packages", ",".join(pkgs))
             # ------ Optional resources ------
-            .config("spark.driver.memory", "2g")
-            .config("spark.executor.memory", "2g")
+            .config("spark.driver.memory", "1g")
+            .config("spark.executor.memory", "1g")
         )
 
         spark = configure_spark_with_delta_pip(builder).getOrCreate()
