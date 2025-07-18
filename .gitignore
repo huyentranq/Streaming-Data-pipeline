@@ -5,7 +5,6 @@ minio/
 plugins/
 include/
 __pycache__/
-spark/
 venv/
 dags/spark_job
 airflow/
