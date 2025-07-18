@@ -3,18 +3,17 @@ A real-time data engineering pipeline that simulates pizza sales data streaming 
 
 ## 📋 Table of Contents
 
-- [🏗️ Project Overview](#️-project-overview)
-- [🏛️ Architecture](#️-architecture)
-- [📊 Data Flow & Lineage](#️-data-flow--lineage)
-- [🚀 Installation & Deployment](#️-installation--deployment)
+- [ Project Overview](#️-project-overview)
+- [ Architecture](#️-architecture)
+- [ Data Flow & Lineage](#-data-flow--lineage)
+- [ Installation & Deployment](#-installation--deployment)
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
   - [🛠️ Makefile Commands](#makefile-commands)
-- [🚧 Limitations & Future Improvements](#️-limitations--future-improvements)
+- [ Limitations & Future Improvements](#-limitations--future-improvements)
   - [Current Limitations](#current-limitations)
   - [How you can make it better](#how-you-can-make-it-better)
-- [🤝 Contributing](#️-contributing)
--
+- [ Contributing](#️-contributing)
 
 ---
 
