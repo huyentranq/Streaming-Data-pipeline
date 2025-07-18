@@ -14,11 +14,11 @@ The Pizza Sales Streaming Pipeline is designed to showcase real-time data proces
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
   - [🛠️ Makefile Commands](#makefile-commands)
-- [ Power BI Dashboard ](#-power-bi-dashboard)
+- [ Power BI Dashboard](#power-bi-dashboard)
 - [ Limitations & Future Improvements](#-limitations--future-improvements)
   - [Current Limitations](#current-limitations)
   - [How you can make it better](#how-you-can-make-it-better)
-- [ Contributing](#️-contributing)
+- [ Contributing](#-contributing)
 
 ---
 
@@ -189,8 +189,11 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    - **Dynamic Filtering**: Slicers allow filtering by date, pizza category, and order source.
 
    [You can download my dashboard here](images/dashboard.pbix)
+
    **Access the Dashboard**:
+
       - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
+
       - Use Power BI Desktop to open and interact with the report.
 
    **Build your own dashboard**
