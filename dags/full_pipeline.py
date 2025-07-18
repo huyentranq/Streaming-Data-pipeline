@@ -13,7 +13,7 @@ with DAG(
     dag_id="pizza_streaming_pipeline",
     default_args=default_args,
     description="Pipeline Spark Streaming: Kafka -> Bronze -> Silver -> Gold",
-    schedule_interval="@once",  # Có thể đổi thành "*/5 * * * *" nếu muốn chạy định kỳ
+    schedule_interval="@once",  
     start_date=datetime(2025, 7, 1),
     catchup=False,
     tags=["streaming", "spark", "elt"]
