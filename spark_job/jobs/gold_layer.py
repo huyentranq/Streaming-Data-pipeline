@@ -5,9 +5,7 @@ import logging
 import os
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import functions as F
-# from pyspark.sql.functions import collect_list, col, udf
-# from pyspark.sql.types import StringType
-# from datetime import datetime, timedelta
+
 import sys
 LAYER = "gold"
 FMT = "delta"
@@ -20,7 +18,6 @@ config = {
 
 spark = create_spark_session(config, "gold_layer")
 
-# bronze_df = read_delta_stream(spark, "lakehouse", "silver", "pizza_sales")
 
 def gold_dim_date(silver_timestamp: DataFrame) -> DataFrame:
     df = (
@@ -50,7 +47,7 @@ def gold_dim_time(silver_timestamp):
 
         silver_timestamp
         .select("order_time")
-        .withColumn("order_time", F.to_timestamp("order_time"))      # ép kiểu rõ ràng                                        # hoặc .withWatermark...
+        .withColumn("order_time", F.to_timestamp("order_time"))      
         .withColumn("time_id", F.date_format("order_time", "HHmm").cast("int")) # để dạng string
         .dropDuplicates(["time_id"])
         .withColumn("hour",     F.hour("order_time"))
@@ -68,7 +65,6 @@ def gold_dim_time(silver_timestamp):
 def gold_dim_pizza(silver_pizza_catalog: DataFrame) -> DataFrame:
     return (
         silver_pizza_catalog
-        # .withColumnRenamed("pizza_name_id", "pizza_id")
         .withColumn("pizza_sk", F.crc32(F.col("pizza_name_id"))) # safe for streaming
     )
 
@@ -92,35 +88,6 @@ def gold_fact_order_item(silver_order_items: DataFrame, dim_date: DataFrame,
         )
     )
     return fact
-
-# silver_ts = read_delta_stream(spark, "lakehouse", "silver", "silver_timestamp")
-# silver_catalog = read_delta_stream(spark, "lakehouse", "silver", "silver_pizza_catalog")
-# silver_order = read_delta_stream(spark, "lakehouse", "silver", "silver_order_items")
-
-# dim_date = gold_dim_date(silver_ts)
-# dim_time = gold_dim_time(silver_ts)
-# dim_pizza = gold_dim_pizza(silver_catalog)
-
-
-# fact_order_item = gold_fact_order_item(
-#     silver_order,
-#     dim_date=dim_date,
-#     dim_time=dim_time,
-#     dim_pizza=dim_pizza
-# )
-
-
-
-# write_stream_to_lake(dim_date, bucket = BUCKET, layer = LAYER, table_name ="gold_dim_date")
-# write_stream_to_lake(dim_time, bucket = BUCKET, layer = LAYER, table_name ="gold_dim_time")
-# write_stream_to_lake(dim_pizza, bucket = BUCKET, layer = LAYER, table_name ="gold_dim_pizza")
-# # logging.info(f"Is streaming: {fact_order_item.isStreaming}")
-# write_stream_to_lake(fact_order_item, bucket = BUCKET, layer = LAYER, table_name ="gold_fact_order_item")
-
-
-# write_stream_to_lake(fact_daily_sales, bucket = BUCKET, layer = LAYER, table_name ="gold_fact_daily_sales")
-
-
 
 
 target = sys.argv[1]            # ex: silver_order_items

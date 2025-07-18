@@ -1,13 +1,10 @@
 from spark_job.resources.spark_manager import *
 from spark_job.resources.minio_manager import *
-# from pyspark.sql.functions import from_json, col, current_timestamp
 import logging
 import os
 from pyspark.sql.dataframe import DataFrame
 from pyspark.sql import functions as F
-# from pyspark.sql.functions import collect_list, col, udf
-# from pyspark.sql.types import StringType
-# from datetime import datetime, timedelta
+
 import sys
 BRONZE_PATH = "s3a://lakehouse/bronze/pizza_sales"
 
