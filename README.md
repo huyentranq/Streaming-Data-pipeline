@@ -3,29 +3,20 @@ A real-time data engineering pipeline that simulates pizza sales data streaming 
 
 ## 📋 Table of Contents
 
-- [🏗️ Project Overview](#️-project-overview)
-  - [Key Features](#key-features)
-- [ Architecture](#️-architecture)
-- [ Data Flow & Lineage](#-data-flow--lineage)
-
-- [ Folder Structure](#-folder-structure)
-- [ Installation & Deployment](#-installation--deployment)
-
-- [🔌 Port Mappings & Service Access](#-port-mappings--service-access)
-
-- [📡 Kafka Streaming Simulation](#-kafka-streaming-simulation)
-  - [Start Data Generation](#start-data-generation)
-  - [Kafka Topics](#kafka-topics)
-  - [Monitor Kafka Streams](#monitor-kafka-streams)
-- [⚡ Airflow Usage](#-airflow-usage)
-
-- [📊 Power BI Connection](#-power-bi-connection)
-
-- [🚧 Limitations & Future Improvements](#-limitations--future-improvements)
+- [🏗️ Project Overview](#️project-overview)
+- [🏛️ Architecture](#️architecture)
+- [📊 Data Flow & Lineage](#️data-flow--lineage)
+- [🚀 Installation & Deployment](#️installation--deployment)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
+  - [Port Mappings & Service Access](#port-mappings--service-access)
+- [📊 Power BI Connection](#️power-bi-connection)
+- [🛠️ Makefile Commands](#makefile-commands)
+- [🚧 Limitations & Future Improvements](#️limitations--future-improvements)
   - [Current Limitations](#current-limitations)
-  - [Proposed Improvements](#proposed-improvements)
-
-- [🙏 Acknowledgments](#-acknowledgments)
+  - [How you can make it better](#how-you-can-make-it-better)
+- [🤝 Contributing](#️contributing)
+-
 
 ---
 
@@ -108,62 +99,15 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
   The main fact table capturing item-level order details.  
   Created by joining `silver_order_items` with dimension tables `gold_dim_date`, `gold_dim_time`, and `gold_dim_pizza` using foreign keys.
 
-## 📁 Folder Structure
-
-```
-pizza-sales-streaming-pipeline/
-├── README.md
-├── Makefile
-├── docker-compose.yml
-├── .env
-├── docs/
-│   ├── images/
-│   └── setup-guides/
-├── airflow/
-│   ├── dags/
-│   │   ├── bronze_to_silver_dag.py
-│   │   ├── silver_to_gold_dag.py
-│   │   └── data_quality_dag.py
-│   ├── plugins/
-│   └── config/
-├── spark/
-│   ├── jobs/
-│   │   ├── bronze_layer_processor.py
-│   │   ├── silver_layer_processor.py
-│   │   └── gold_layer_processor.py
-│   ├── config/
-│   └── requirements.txt
-├── kafka/
-│   ├── producers/
-│   │   ├── pizza_sales_producer.py
-│   │   └── data_generator.py
-│   ├── config/
-│   └── schemas/
-├── sql/
-│   ├── create_tables.sql
-│   ├── silver_layer_transforms.sql
-│   └── gold_layer_aggregations.sql
-├── minio/
-│   └── config/
-├── postgresql/
-│   ├── init/
-│   └── config/
-├── powerbi/
-│   ├── dashboards/
-│   └── reports/
-└── monitoring/
-    ├── grafana/
-    └── prometheus/
-```
 
 ## 🚀 Installation & Deployment
 
 ### Prerequisites
 
-- Docker Desktop
-- 8GB+ RAM recommended
-- python 3.8
-- Power BI Desktop
+   - Docker Desktop
+   - 8GB+ RAM recommended
+   - python 3.8
+   - Power BI Desktop
 ### Quick Start
 
 1. **Clone the repository**
@@ -186,18 +130,18 @@ pizza-sales-streaming-pipeline/
    ```
   **Port Mappings & Service Access**
 
-| Service | Port | URL | Description |
-|---------|------|-----|-------------|
-| Apache Airflow | 8080 | http://localhost:8080 | Workflow orchestration UI |
-| Kafka UI | 8081 | http://localhost:8081 | Kafka cluster management |
-| MinIO Console | 9001 | http://localhost:9000 | Data lake management |
-| PostgreSQL | 5432 | http://localhost:5432 | Data warehouse |
+      | Service | Port | URL | Description |
+      |---------|------|-----|-------------|
+      | Apache Airflow | 8080 | http://localhost:8080 | Workflow orchestration UI |
+      | Kafka UI | 8081 | http://localhost:8081 | Kafka cluster management |
+      | MinIO Console | 9001 | http://localhost:9000 | Data lake management |
+      | PostgreSQL | 5432 | http://localhost:5432 | Data warehouse |
 
 4. **Start kafka streaming**
    ```bash
    make kafka_stream
    ```
-Visit http://localhost:8081 to monitor messages streamed from the producer.
+   Visit http://localhost:8081 to monitor messages streamed from the producer.
 5. **Initialize the data warehouse**
    ```bash
    make psql_create
@@ -212,7 +156,7 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
    connect Power BI with warehouse(psql) 
 <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
 
-[You can download my dashboard here](images/db.pbix)
+[You can download my dashboard here](images/dashboard.pbix)
 **Key Features**:
    - **Revenue Analytics**: Total revenue by time, pizza type, and order channel.
    - **Best Seller Insights**: Top-selling pizzas and categories.
@@ -220,11 +164,10 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
    - **Dynamic Filtering**: Slicers allow filtering by date, pizza category, and order source.
 
 **Access the Dashboard**:
-   The .pbix file is included in the reports/ directory.
 
-   Use Power BI Desktop to open and interact with the report.
-
-   Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
+   - The .pbix file is included in the reports/ directory.
+   - Use Power BI Desktop to open and interact with the report.
+   - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
 
 
 ### Makefile Commands
@@ -250,54 +193,17 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
 
 
 
-### Default Credentials
-
-- **Airflow**: airflow / airflow
-- **MinIO**: minio / minio123
-- **PostgreSQL**: airflow / airflow
-
-
-
-
-## 📊 Power BI (desktop)
-
-### connect Power BI to postgres
-
-1. **Get connection details**
-   ```bash
-   make get-db-credentials
-   ```
-
-2. **Power BI Connection String**
-   ```
-   Server: localhost
-   Port: 5432
-   Database: pizza_sales_dw
-   Username: postgres
-   Password: postgres
-   ```
-
-### Available Tables for Analysis
-
-- `gold.daily_sales_summary`
-- `gold.pizza_performance`
-- `gold.customer_segments`
-- `gold.hourly_trends`
-- `gold.revenue_analytics`
-
-
 
 ## 🚧 Limitations & Future Improvements
 
 ### Current Limitations
 
 1. **Scalability**: Single-node setup limits processing capacity
-2. **Data Volume**: Optimized for moderate data volumes (< 1M records/day)
 3. **Error Handling**: Basic error handling and retry mechanisms
 4. **Security**: Default credentials and minimal security configuration
 5. **Monitoring**: Limited observability and alerting capabilities
 
-### Proposed Improvements
+### How you can make it better
 
 1. **Enhanced Scalability**
    - Multi-node Kafka and Spark clusters
@@ -309,29 +215,12 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
    - CDC (Change Data Capture) for real-time updates
    - Event-driven architecture with additional microservices
 
-3. **Security Enhancements**
-   - SSL/TLS encryption for all communications
-   - OAuth2/SAML integration for authentication
-   - Role-based access control (RBAC)
-   - Data encryption at rest and in transit
 
-4. **Monitoring & Observability**
-   - Comprehensive logging with ELK stack
-   - Prometheus metrics and custom dashboards
-   - Alerting for data quality and system health
-   - Distributed tracing for debugging
-
-5. **Data Quality & Governance**
+3. **Data Quality & Governance**
    - Data lineage tracking
    - Automated data profiling and validation
    - Schema evolution and compatibility checks
    - Data catalog integration
-
-6. **Performance Optimization**
-   - Caching strategies for frequently accessed data
-   - Database indexing optimization
-   - Spark job tuning and optimization
-   - Efficient data formats (Delta Lake, Iceberg)
 
 ## 🤝 Contributing
 
@@ -342,12 +231,6 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
 5. Open a Pull Request
 
 
-
-## 🙏 Acknowledgments
-
-- Apache Software Foundation for the excellent open-source tools
-- The data engineering community for inspiration and best practices
-- Pizza lovers worldwide for the motivation to create this project
 
 ---
 
