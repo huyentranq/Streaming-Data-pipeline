@@ -3,19 +3,17 @@ A real-time data engineering pipeline that simulates pizza sales data streaming 
 
 ## 📋 Table of Contents
 
-- [🏗️ Project Overview](#️project-overview)
-- [🏛️ Architecture](#️architecture)
-- [📊 Data Flow & Lineage](#️data-flow--lineage)
-- [🚀 Installation & Deployment](#️installation--deployment)
+- [🏗️ Project Overview](#️-project-overview)
+- [🏛️ Architecture](#️-architecture)
+- [📊 Data Flow & Lineage](#️-data-flow--lineage)
+- [🚀 Installation & Deployment](#️-installation--deployment)
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
-  - [Port Mappings & Service Access](#port-mappings--service-access)
-- [📊 Power BI Connection](#️power-bi-connection)
-- [🛠️ Makefile Commands](#makefile-commands)
-- [🚧 Limitations & Future Improvements](#️limitations--future-improvements)
+  - [🛠️ Makefile Commands](#makefile-commands)
+- [🚧 Limitations & Future Improvements](#️-limitations--future-improvements)
   - [Current Limitations](#current-limitations)
   - [How you can make it better](#how-you-can-make-it-better)
-- [🤝 Contributing](#️contributing)
+- [🤝 Contributing](#️-contributing)
 -
 
 ---
@@ -128,7 +126,7 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    make up
 
    ```
-  **Port Mappings & Service Access**
+   **Port Mappings & Service Access**
 
       | Service | Port | URL | Description |
       |---------|------|-----|-------------|
@@ -154,9 +152,10 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
 7. **Power BI Dashboard**
 
    connect Power BI with warehouse(psql) 
-<img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
+   <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
 
-[You can download my dashboard here](images/dashboard.pbix)
+   [You can download my dashboard here](images/dashboard.pbix)
+
 **Key Features**:
    - **Revenue Analytics**: Total revenue by time, pizza type, and order channel.
    - **Best Seller Insights**: Top-selling pizzas and categories.
@@ -165,7 +164,7 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
 
 **Access the Dashboard**:
 
-   - The .pbix file is included in the reports/ directory.
+   - The .pbix file is included in the images/dashboard.pbix.
    - Use Power BI Desktop to open and interact with the report.
    - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
 
