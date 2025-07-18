@@ -42,7 +42,7 @@ The pipeline follows a modern data architecture pattern with the following compo
 ## 📊 Data Flow & Lineage
 
 
-<img src="images/data_lineage.png" alt="Data Lineage" width="800"/>
+<img src="images/data_lineage.png" alt="Data Lineage" width="600"/>
 
 
 
@@ -153,22 +153,15 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    From there, you can view, trigger, and monitor all available DAGs
 7. **Power BI Dashboard**
 
-   connect Power BI with warehouse(psql) 
-   <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
-
    [You can download my dashboard here](images/dashboard.pbix)
 
-**Key Features**:
-   - **Revenue Analytics**: Total revenue by time, pizza type, and order channel.
-   - **Best Seller Insights**: Top-selling pizzas and categories.
-   - **Operational Metrics**: Number of orders, average order value, and peak order hours.
-   - **Dynamic Filtering**: Slicers allow filtering by date, pizza category, and order source.
-
 **Access the Dashboard**:
-
+   - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
    - The .pbix file is included in the images/dashboard.pbix.
    - Use Power BI Desktop to open and interact with the report.
-   - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
+
+**Build your own dashboard**
+
 
 
 ### Makefile Commands
@@ -193,7 +186,14 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
 > 💡 **Tip:** Ensure your `.env` file is correctly configured before executing any command.
 
 
+## Power BI Dashboard 
+   <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
 
+**Key Features**:
+   - **Revenue Analytics**: Total revenue by time, pizza type, and order channel.
+   - **Best Seller Insights**: Top-selling pizzas and categories.
+   - **Operational Metrics**: Number of orders, average order value, and peak order hours.
+   - **Dynamic Filtering**: Slicers allow filtering by date, pizza category, and order source.
 
 ## 🚧 Limitations & Future Improvements
 
