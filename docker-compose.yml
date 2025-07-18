@@ -90,6 +90,8 @@ x-airflow-common: &airflow-common
       condition: service_healthy
     postgres:
       condition: service_healthy
+  networks:
+    - airflow_spark_net
 
 services:
   # install-requirements:
@@ -107,18 +109,21 @@ services:
     image: postgres:13
     container_name: airflow-postgres
     cpus: "0.5"
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"   # 👈 thêm dòng này
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+      - ./load_dataset:/tmp/load_dataset
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
       retries: 5
       start_period: 5s
-    #restart: always
+    networks:
+      - airflow_spark_net 
+    restart: always
 
   redis:
     image: redis:latest
@@ -133,6 +138,8 @@ services:
       retries: 50
       start_period: 30s
     #restart: always
+    networks:
+      - airflow_spark_net
 
   airflow-webserver:
     <<: *airflow-common
@@ -196,26 +203,26 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-  airflow-triggerer:
-    <<: *airflow-common
-    container_name: airflow-triggerer
-    command: triggerer
-    cpus: "0.5"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"',
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
-    #restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+  # airflow-triggerer:
+  #   <<: *airflow-common
+  #   container_name: airflow-triggerer
+  #   command: triggerer
+  #   cpus: "0.5"
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"',
+  #       ]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 30s
+  #   #restart: always
+  #   depends_on:
+  #     <<: *airflow-common-depends-on
+  #     airflow-init:
+  #       condition: service_completed_successfully
 
   airflow-init:
     <<: *airflow-common
@@ -296,19 +303,19 @@ services:
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
 
-  airflow-cli:
-    <<: *airflow-common
-    container_name: airflow-cli
-    profiles:
-      - debug
-    environment:
-      <<: *airflow-common-env
-      CONNECTION_CHECK_MAX_COUNT: "0"
-    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
-    command:
-      - bash
-      - -c
-      - airflow
+  # airflow-cli:
+  #   <<: *airflow-common
+  #   container_name: airflow-cli
+  #   profiles:
+  #     - debug
+  #   environment:
+  #     <<: *airflow-common-env
+  #     CONNECTION_CHECK_MAX_COUNT: "0"
+  #   # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
+  #   command:
+  #     - bash
+  #     - -c
+  #     - airflow
 
   # # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
   # # or by explicitly targeted on the command line e.g. docker-compose up flower.
@@ -335,14 +342,17 @@ services:
 
   # Fix permission denied when using DockerOperator in Airflow
   # Ref: https://onedevblog.com/how-to-fix-a-permission-denied-when-using-dockeroperator-in-airflow/
-  docker-proxy:
-    image: tecnativa/docker-socket-proxy:0.1.1
-    container_name: airflow-docker-proxy
-    command: "TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock"
-    ports:
-      - "2376:2375"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
+  
+  # docker-proxy:
+  #   image: tecnativa/docker-socket-proxy:0.1.1
+  #   container_name: airflow-docker-proxy
+  #   command: "TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock"
+  #   ports:
+  #     - "2376:2375"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+networks:
+  airflow_spark_net:
+    external: true  
 volumes:
   postgres-db-volume:

@@ -136,6 +136,7 @@ services:
     networks:
       - confluent
       - airflow_spark_net  
+    cpus: 1.0
 
   spark-worker:
     <<: *spark-common
