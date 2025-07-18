@@ -64,10 +64,10 @@ The pipeline follows a modern data architecture pattern with the following compo
 
    - The resulting tables include:
 
-         - **`silver_cleaned`**: cleaned data derived from bronze_pizza_sales.
-         - **`silver_order_items`**: extracts detailed information about each order.
-         - **`silver_pizza_catalog`**: extracts detailed information about each type of pizza.
-         - **`silver_timestamp`**: extracts and computes additional time-related attributes.
+      - **`silver_cleaned`**: cleaned data derived from bronze_pizza_sales.
+      - **`silver_order_items`**: extracts detailed information about each order.
+      - **`silver_pizza_catalog`**: extracts detailed information about each type of pizza.
+      - **`silver_timestamp`**: extracts and computes additional time-related attributes.
    
 4. **Gold Layer (Aggregated Data)**:
 <img src="images/gold.png" alt="gold" width="800"/>
@@ -95,6 +95,7 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
   The main fact table capturing item-level order details.  
   Created by joining `silver_order_items` with dimension tables `gold_dim_date`, `gold_dim_time`, and `gold_dim_pizza` using foreign keys.
 
+--- 
 
 ## 🚀 Installation & Deployment
 
