@@ -2,7 +2,7 @@
 A real-time data engineering pipeline that simulates pizza sales data streaming using modern big data technologies. This project demonstrates a complete end-to-end streaming solution implementing the medallion architecture (Bronze-Silver-Gold layers) for data processing and analytics.
 
 **you can view detail about this project in my portolio here**
-   [huyentranq.github.io](huyentranq.github.io)
+   [huyentranq.github.io](https://huyentranq.github.io/)
 
 ## 📋 Table of Contents
 
