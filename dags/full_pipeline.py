@@ -22,7 +22,7 @@ with DAG(
 
     # bronze_layer
     kafka_to_bronze = BashOperator(
-        task_id="kafka_to_bronze",
+        task_id="bronze_pizza_sales",
         bash_command="docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/kafka_to_bronze.py",
     )
 
@@ -92,4 +92,4 @@ silver_pizza_catalog >>  gold_dim_pizza        # chỉ dim_pizza cần
 
 # 4. Fact aggregate / daily KPI
 
-gold_fact_order_item >> load_to_psql
+[gold_dim_date, gold_dim_time, gold_dim_pizza, gold_fact_order_item] >> load_to_psql
