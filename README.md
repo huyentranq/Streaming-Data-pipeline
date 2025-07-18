@@ -1,12 +1,13 @@
 # Pizza Sales Streaming Pipeline
-A real-time data engineering pipeline that simulates pizza sales data streaming using modern big data technologies. This project demonstrates a complete end-to-end streaming solution implementing the medallion architecture (Bronze-Silver-Gold layers) for data processing and analytics.
 
-**you can view detail about this project in my portolio here**
+**💼 For more detail please visit my personal portfolio site**
    [huyentranq.github.io](https://huyentranq.github.io/)
+
+The Pizza Sales Streaming Pipeline is designed to showcase real-time data processing capabilities by simulating pizza restaurant sales data. The pipeline ingests streaming data through Apache Kafka, processes it using Apache Spark Streaming, stores raw and processed data in MinIO and PostgreSQL respectively, orchestrates workflows with Apache Airflow, and provides business insights through Power BI dashboards.
+
 
 ## 📋 Table of Contents
 
-- [ Project Overview](#️-project-overview)
 - [ Architecture](#️-architecture)
 - [ Data Flow & Lineage](#-data-flow--lineage)
 - [ Installation & Deployment](#-installation--deployment)
@@ -19,11 +20,6 @@ A real-time data engineering pipeline that simulates pizza sales data streaming 
 - [ Contributing](#️-contributing)
 
 ---
-
-
-## 🏗️ Project Overview
-
-The Pizza Sales Streaming Pipeline is designed to showcase real-time data processing capabilities by simulating pizza restaurant sales data. The pipeline ingests streaming data through Apache Kafka, processes it using Apache Spark Streaming, stores raw and processed data in MinIO and PostgreSQL respectively, orchestrates workflows with Apache Airflow, and provides business insights through Power BI dashboards.
 
 
 ## 🏛️ Architecture
