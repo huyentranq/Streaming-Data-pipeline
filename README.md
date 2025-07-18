@@ -45,7 +45,7 @@ The pipeline follows a modern data architecture pattern with the following compo
 - **Real-time Data Streaming**: Kafka producers simulate continuous pizza sales transactions
 - **Stream Processing**: Spark Streaming processes data in near real-time
 - **Medallion Architecture**: Implements Bronze, Silver, and Gold data layers
-- **Data Lake Storage**: MinIO serves as the data lake for raw data storage
+- **Data Lake Storage**: MinIO serves as the data lake for saving data from 3 layer
 - **Data Warehouse**: PostgreSQL stores processed, analytics-ready data
 - **Workflow Orchestration**: Airflow manages and schedules data pipelines
 - **Business Intelligence**: Power BI dashboards for data visualization and insights
@@ -59,24 +59,28 @@ The pipeline follows a modern data architecture pattern with the following compo
 
 
 
-1. **Data Generation**: Python scripts simulate pizza sales transactions with realistic patterns
+1. **Messages from Kafka**:  
+   - Raw streaming data produced by upstream services  
+   - Queued messages ready to be ingested into the Bronze layer
 2. **Bronze Layer (Raw Data)**: 
 <img src="images/bronze.png" alt="bronze" width="800"/>
-   - Kafka topics receive streaming sales data
-   - Raw data stored in MinIO in Parquet format
-   - Data includes: bronze_pizza_sales - raw data stream from dataset
+   - Kafka topic `pizza_sales` receives raw streaming order data.
+   - Data is parsed using a predefined schema and enriched with `ingest_time`.
+   - Only one MinIO bucket (`lakehouse`) is used across all layers; no need to duplicate per layer.
+
 
 3. **Silver Layer (Cleaned Data)**:
 <img src="images/silver.png" alt="silver" width="800"/>
-   - Spark Streaming performs data validation and cleansing.
+   - The raw data from the Bronze layer is cleaned, validated, and transformed into structured tables.
    - Includes deduplication and strict schema enforcement.
    - Data is enriched with additional calculated fields.
+
    - The resulting tables include:
 
-         - silver_cleaned: cleaned data derived from bronze_pizza_sales.
-         - silver_order_items: extracts detailed information about each order.
-         - silver_pizza_catalog: extracts detailed information about each type of pizza.
-         - silver_timestamp: extracts and computes additional time-related attributes.
+         - **`silver_cleaned`**: cleaned data derived from bronze_pizza_sales.
+         - **`silver_order_items`**: extracts detailed information about each order.
+         - **`silver_pizza_catalog`**: extracts detailed information about each type of pizza.
+         - **`silver_timestamp`**: extracts and computes additional time-related attributes.
    
 4. **Gold Layer (Aggregated Data)**:
 <img src="images/gold.png" alt="gold" width="800"/>
@@ -98,7 +102,7 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
   Contains detailed information on each pizza, built from `silver_pizza_catalog`.  
   Includes a synthetic key `pizza_sk` for joining with fact tables.
 
-### 📙 Fact Tables
+**Fact Tables**
 
 - **`gold_fact_order_item`**:  
   The main fact table capturing item-level order details.  
@@ -163,8 +167,8 @@ pizza-sales-streaming-pipeline/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/pizza-sales-streaming-pipeline.git
-   cd pizza-sales-streaming-pipeline
+   git clone https://github.com/huyentranq/Streaming-Data-pipeline.git
+   cd Streaming-Data-pipeline
    ```
 
 2. **Set up environment variables**
@@ -185,28 +189,46 @@ pizza-sales-streaming-pipeline/
 |---------|------|-----|-------------|
 | Apache Airflow | 8080 | http://localhost:8080 | Workflow orchestration UI |
 | Kafka UI | 8081 | http://localhost:8081 | Kafka cluster management |
-| MinIO Console | 9001 | http://localhost:9001 | Data lake management |
+| MinIO Console | 9001 | http://localhost:9000 | Data lake management |
 | PostgreSQL | 5432 | localhost:5432 | Data warehouse |
-| Spark Master UI | 4040 | http://localhost:4040 | Spark cluster monitoring |
-| Grafana | 3000 | http://localhost:3000 | Pipeline monitoring |
-| Jupyter Lab | 8888 | http://localhost:8888 | Data exploration |
 
 4. **Start kafka streaming**
    ```bash
    make kafka_stream
    ```
-
+Visit http://localhost:8081 to monitor messages streamed from the producer.
 5. **Initialize the data warehouse**
    ```bash
    make psql_create
    ```
-   - connect psql to dbeaver(desktop)  and use dbeaver to manage database
-6. **Open Airflow to manage dags**
+   - Connect PostgreSQL to DBeaver (desktop app) for managing the database with a graphical interface.
+6. **Launch Airflow to Manage DAGs**
    http://localhost:8080
 
+   From there, you can view, trigger, and monitor all available DAGs
 
 ### Makefile Commands
+`Makefile` to simplify setup, deployment, and testing. Below is a summary of the available commands:
 
+| Command               | Description                                                      |
+|-----------------------|------------------------------------------------------------------|
+| `make install`        | Install Python dependencies from `requirements.txt`              |
+| `make build`          | Build all Docker containers                                      |
+| `make up`             | Start all services defined in `docker-compose.yml`              |
+| `make down`           | Stop and remove all core services                                |
+| `make build_stream`   | Build streaming services from `stream-docker-compose.yml`        |
+| `make up_stream`      | Start streaming services (Kafka, Spark Streaming, etc.)          |
+| `make down_stream`    | Stop and remove streaming services and volumes                   |
+| `make kafka_stream`   | Run the Kafka producer to stream data into Kafka topic           |
+| `make test_bronze`    | Run the Bronze Layer Spark job (`kafka_to_bronze.py`)            |
+| `make test_silver`    | Run the Silver Layer Spark job (`silver_layer.py`)               |
+| `make test_gold`      | Run the Gold Layer Spark job (`gold_layer.py`)                   |
+| `make test_warehouse` | Load final data into the PostgreSQL warehouse (`warehouse.py`)   |
+| `make to_psql`        | Connect to the PostgreSQL database (using variables from `.env`) |
+| `make to_psql_no_db`  | Connect to the PostgreSQL server without selecting a database     |
+| `make psql_create`    | Initialize PostgreSQL schema using `/tmp/load_dataset/psql_schema.sql` |
+
+> 💡 **Tip:** Ensure your `.env` file is correctly configured before executing any command.
 ```bash
 # Deploy all services
 make deploy
