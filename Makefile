@@ -1,8 +1,6 @@
 include .env
 install:
 	pip install -r requirements.txt
-open:
-	docker exec -it broker bash
 
 build_stream:
 	docker-compose -f stream-docker-compose.yml build
@@ -11,8 +9,6 @@ up_stream:
 down_stream:
 	docker-compose -f stream-docker-compose.yml down -v
 
-download-spark-jars:
-	./download_spark_jars.sh
 
 build:
 	docker-compose build
@@ -27,7 +23,6 @@ kafka_stream:
 
 test_bronze:
 	docker exec spark-master spark-submit /opt/airflow/scripts/spark_job/jobs/kafka_to_bronze.py
-
 
 
 # SILVER LAYER

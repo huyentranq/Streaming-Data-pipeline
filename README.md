@@ -43,7 +43,9 @@ The pipeline follows a modern data architecture pattern with the following compo
    <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
 
  more detail about the dashboard below. 
- 
+
+---
+
 ## 📊 Data Flow & Lineage
 
 
