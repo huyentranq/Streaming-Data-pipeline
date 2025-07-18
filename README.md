@@ -14,6 +14,7 @@ The Pizza Sales Streaming Pipeline is designed to showcase real-time data proces
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
   - [🛠️ Makefile Commands](#makefile-commands)
+- [ Power BI Dashboard ](#-power-bi-dashboard)
 - [ Limitations & Future Improvements](#-limitations--future-improvements)
   - [Current Limitations](#current-limitations)
   - [How you can make it better](#how-you-can-make-it-better)
@@ -151,16 +152,7 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    http://localhost:8080
 
    From there, you can view, trigger, and monitor all available DAGs
-7. **Power BI Dashboard**
 
-   [You can download my dashboard here](images/dashboard.pbix)
-
-**Access the Dashboard**:
-   - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
-   - The .pbix file is included in the images/dashboard.pbix.
-   - Use Power BI Desktop to open and interact with the report.
-
-**Build your own dashboard**
 
 
 
@@ -185,6 +177,7 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
 
 > 💡 **Tip:** Ensure your `.env` file is correctly configured before executing any command.
 
+---
 
 ## Power BI Dashboard 
    <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
@@ -195,6 +188,12 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    - **Operational Metrics**: Number of orders, average order value, and peak order hours.
    - **Dynamic Filtering**: Slicers allow filtering by date, pizza category, and order source.
 
+   [You can download my dashboard here](images/dashboard.pbix)
+   **Access the Dashboard**:
+      - Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
+      - Use Power BI Desktop to open and interact with the report.
+
+   **Build your own dashboard**
 ## 🚧 Limitations & Future Improvements
 
 ### Current Limitations
