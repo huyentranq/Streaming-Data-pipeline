@@ -163,6 +163,7 @@ pizza-sales-streaming-pipeline/
 - Docker Desktop
 - 8GB+ RAM recommended
 - python 3.8
+- Power BI Desktop
 ### Quick Start
 
 1. **Clone the repository**
@@ -190,7 +191,7 @@ pizza-sales-streaming-pipeline/
 | Apache Airflow | 8080 | http://localhost:8080 | Workflow orchestration UI |
 | Kafka UI | 8081 | http://localhost:8081 | Kafka cluster management |
 | MinIO Console | 9001 | http://localhost:9000 | Data lake management |
-| PostgreSQL | 5432 | localhost:5432 | Data warehouse |
+| PostgreSQL | 5432 | http://localhost:5432 | Data warehouse |
 
 4. **Start kafka streaming**
    ```bash
@@ -206,6 +207,25 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
    http://localhost:8080
 
    From there, you can view, trigger, and monitor all available DAGs
+7. **Power BI Dashboard**
+
+   connect Power BI with warehouse(psql) 
+<img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
+
+[You can download my dashboard here](images/db.pbix)
+**Key Features**:
+   - **Revenue Analytics**: Total revenue by time, pizza type, and order channel.
+   - **Best Seller Insights**: Top-selling pizzas and categories.
+   - **Operational Metrics**: Number of orders, average order value, and peak order hours.
+   - **Dynamic Filtering**: Slicers allow filtering by date, pizza category, and order source.
+
+**Access the Dashboard**:
+   The .pbix file is included in the reports/ directory.
+
+   Use Power BI Desktop to open and interact with the report.
+
+   Make sure the PostgreSQL connection is properly configured in Power BI (check credentials and host settings).
+
 
 ### Makefile Commands
 `Makefile` to simplify setup, deployment, and testing. Below is a summary of the available commands:
@@ -213,10 +233,8 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
 | Command               | Description                                                      |
 |-----------------------|------------------------------------------------------------------|
 | `make install`        | Install Python dependencies from `requirements.txt`              |
-| `make build`          | Build all Docker containers                                      |
 | `make up`             | Start all services defined in `docker-compose.yml`              |
 | `make down`           | Stop and remove all core services                                |
-| `make build_stream`   | Build streaming services from `stream-docker-compose.yml`        |
 | `make up_stream`      | Start streaming services (Kafka, Spark Streaming, etc.)          |
 | `make down_stream`    | Stop and remove streaming services and volumes                   |
 | `make kafka_stream`   | Run the Kafka producer to stream data into Kafka topic           |
@@ -229,79 +247,17 @@ Visit http://localhost:8081 to monitor messages streamed from the producer.
 | `make psql_create`    | Initialize PostgreSQL schema using `/tmp/load_dataset/psql_schema.sql` |
 
 > 💡 **Tip:** Ensure your `.env` file is correctly configured before executing any command.
-```bash
-# Deploy all services
-make deploy
 
-# Stop all services
-make stop
-
-# Restart services
-make restart
-
-# View logs
-make logs
-
-# Clean up everything
-make clean
-
-# Initialize database schemas
-make init-database
-
-# Start Kafka producers
-make start-streaming
-
-# Stop streaming
-make stop-streaming
-
-# Run data quality checks
-make data-quality-check
-
-# Backup data
-make backup
-
-# Monitor services
-make monitor
-```
 
 
 ### Default Credentials
 
-- **Airflow**: airflow / airflow123
+- **Airflow**: airflow / airflow
 - **MinIO**: minio / minio123
 - **PostgreSQL**: airflow / airflow
 
 
 
-
-
-### Monitor Kafka Streams
-
-<img src="docs/images/kafka-ui-screenshot.png" alt="Kafka UI Screenshot" width="800"/>
-
-```bash
-
-## ⚡ Airflow Usage
-
-### Access Airflow WebUI
-
-1. Navigate to http://localhost:8080
-2. Login with .env config
-3. Enable DAGs from the main dashboard
-
-<img src="docs/images/airflow-dashboard.png" alt="Airflow Dashboard Screenshot" width="800"/>
-
-### Available DAGs
-
-- **bronze_to_silver_dag**: Processes raw data and applies data quality rules
-- **silver_to_gold_dag**: Creates business aggregations and KPIs
-- **data_quality_dag**: Runs data quality checks and alerts
-- **backup_dag**: Scheduled backups of processed data
-
-
-### Monitor DAG Execution
-
-<img src="docs/images/airflow-dag-runs.png" alt="Airflow DAG Runs Screenshot" width="600"/>
 
 ## 📊 Power BI (desktop)
 
@@ -329,18 +285,7 @@ make monitor
 - `gold.hourly_trends`
 - `gold.revenue_analytics`
 
-### Sample Power BI Dashboard
 
-<img src="docs/images/powerbi-dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
-
-### Key Metrics Available
-
-- Real-time sales volume and revenue
-- Top-performing pizza types and sizes
-- Peak hours and seasonal trends
-- Customer ordering patterns
-- Profit margin analysis
-- Geographic sales distribution
 
 ## 🚧 Limitations & Future Improvements
 
