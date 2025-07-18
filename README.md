@@ -210,17 +210,14 @@ The **Gold Layer** contains aggregated and transformed data structured into dime
    - Kubernetes deployment for auto-scaling
    - Partitioning strategies for large datasets
 
-2. **Advanced Features**
-   - Real-time ML model serving for demand forecasting
-   - CDC (Change Data Capture) for real-time updates
-   - Event-driven architecture with additional microservices
 
-
-3. **Data Quality & Governance**
+2. **Data Quality & Governance**
    - Data lineage tracking
    - Automated data profiling and validation
-   - Schema evolution and compatibility checks
-   - Data catalog integration
+
+3. **Integerate CI/CD**
+   - logic testing
+   - schema validation
 
 ## 🤝 Contributing
 
