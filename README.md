@@ -39,7 +39,11 @@ The pipeline follows a modern data architecture pattern with the following compo
 - **Business Intelligence**: Power BI dashboards for data visualization and insights
 - **Containerized Deployment**: Docker-based setup for easy deployment and scalability
 
+## Sales Insight Dashboard by Power BI 
+   <img src="images/dashboard.png" alt="Power BI Dashboard Screenshot" width="800"/>
 
+ more detail about the dashboard below. 
+ 
 ## 📊 Data Flow & Lineage
 
 
