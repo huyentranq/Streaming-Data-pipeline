@@ -11,7 +11,7 @@ POSTGRESQL_CONFIG = {
     "password": os.getenv("POSTGRES_PASSWORD")
 }
 
-print("✅ POSTGRESQL_CONFIG =", POSTGRESQL_CONFIG)
+# print("✅ POSTGRESQL_CONFIG =", POSTGRESQL_CONFIG)
 
 config = {
     "endpoint_url": os.getenv("MINIO_ENDPOINT"),
